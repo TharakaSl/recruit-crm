@@ -22,9 +22,19 @@ const render = Component => {
 };
 
 /* Render application after Office initializes */
-Office.initialize = () => {
+Office.onReady(() => {
   isOfficeInitialized = true;
+  if (typeof Office.context.mailbox.addHandlerAsync !== "undefined") {
+    Office.context.mailbox.addHandlerAsync(
+      Office.EventType.ItemChanged,
+      itemChanged
+    );
+  }
   render(App);
+});
+
+const itemChanged = _eventArgs => {
+  setTimeout(function() {  render(App);}, 100);
 };
 
 if ((module as any).hot) {
