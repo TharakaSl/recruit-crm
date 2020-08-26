@@ -4,13 +4,14 @@ import { AppContainer } from "react-hot-loader";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import "antd/dist/antd.css";
 /* global AppCpntainer, Component, document, Office, module, require */
 
 initializeIcons();
 
 let isOfficeInitialized = false;
 
-const title = "Contoso Task Pane Add-in";
+const title = "Recruit CRM Add-in";
 
 const render = Component => {
   ReactDOM.render(

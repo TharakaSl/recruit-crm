@@ -1,5 +1,4 @@
 import * as React from "react";
-import Header from "./Header";
 import Progress from "./Progress";
 import Initial from "./Initial";
 
@@ -41,8 +40,7 @@ export default class App extends React.Component<AppProps, AppState> {
     }
 
     return (
-      <div className="ms-welcome">
-        <Header logo="assets/logo-filled.png" title={this.props.title} message="Welcome" />
+      <div>
         <Initial title={this.props.title}/>
       </div>
     );

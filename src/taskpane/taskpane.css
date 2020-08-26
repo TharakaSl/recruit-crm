@@ -16,6 +16,17 @@
      padding: 0;
  }
  
+ .centered {
+    height: 30vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+ .recruit-crm-container {
+    padding: 10px;
+  }
+
  .ms-welcome__header {
     padding: 20px;
     padding-bottom: 30px;

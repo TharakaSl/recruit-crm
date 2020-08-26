@@ -20,7 +20,7 @@ class Initial extends React.Component<InitialProps, InitialState> {
   }
 
   componentDidMount() {
-    const authKey = Office.context.roamingSettings.get("authKey");
+    const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
     if (authKey) {
       this.setState({ isLogged: true });
     }

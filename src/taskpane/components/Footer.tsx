@@ -2,10 +2,8 @@ import * as React from "react";
 import { getClassNames } from "../../../classNames/Footer.classNames";
 import { Label, Link } from "office-ui-fabric-react";
 import * as ReactDOM from "react-dom";
-import Home from "./Initial";
-import BlockUi from "react-block-ui";
-import Loader from "react-loader-spinner";
-import "react-block-ui/style.css";
+import Initial from "./Initial";
+import { Spin } from "antd";
 export interface FooterProps {
   isLogged: boolean;
 }
@@ -30,48 +28,53 @@ class Footer extends React.Component<FooterProps, FooterState> {
   render() {
     let { copyrightbl } = getClassNames();
     return (
-      <BlockUi
-        tag="div"
-        blocking={this.state.blocking}
-        style={{marginTop: '100px'}}
-        loader={<Loader active type={this.state.loaderType} height={30} width={30} color="#02a17c" />}
-      >
-      <div className="ms-Grid" dir="ltr">
-        <div
-          className="ms-Grid-row"
-          style={{
-            backgroundColor: "#ffffff",
-            minHeight: 20,
-            position: "fixed",
-            bottom: 0,
-            left: 8,
-            right: 8
-          }}
-        >
-          <div style={{ textAlign: "center" }}>
-            <Label className={copyrightbl} style={{display: 'inline-block'}}>© 2020 - v 1.0.2</Label>
-            {this.props.isLogged && (
-              <Link title="Sign out" onClick={this.onDisconnect} style={{display: 'inline-block', fontSize: '12px'}}>
-                Sign out
-              </Link>
-            )}
+      <div>
+        {!this.state.blocking ? (
+          <div className="ms-Grid" dir="ltr">
+            <div
+              className="ms-Grid-row"
+              style={{
+                backgroundColor: "#ffffff",
+                minHeight: 20,
+                position: "fixed",
+                bottom: 0,
+                left: 8,
+                right: 8
+              }}
+            >
+              <div style={{ textAlign: "center" }}>
+                <Label className={copyrightbl} style={{ display: "inline-block" }}>
+                  © 2020 - v 1.0.2
+                </Label>
+                {this.props.isLogged && (
+                  <Link
+                    title="Sign out"
+                    onClick={this.onDisconnect}
+                    style={{ display: "inline-block", fontSize: "12px" }}
+                  >
+                    Sign out
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="centered">
+            <Spin />
+          </div>
+        )}
       </div>
-      </BlockUi>
     );
   }
 
   onDisconnect = () => {
-    this.setState({blocking: true});
-    Office.context.roamingSettings.remove("storeUrl");
-    Office.context.roamingSettings.remove("consumerKey");
-    Office.context.roamingSettings.remove("consumerSecret");
+    this.setState({ blocking: true });
+    Office.context.roamingSettings.remove("keyRecruitCRM");
     Office.context.roamingSettings.saveAsync((asyncResult: Office.AsyncResult<void>) => {
       console.log(asyncResult);
       setTimeout(() => {
-        this.setState({blocking: false})
-        ReactDOM.render(<Home title="Woocommerce Add in" />, document.getElementById("container"));
+        this.setState({ blocking: false });
+        ReactDOM.render(<Initial title="Woocommerce Add in" />, document.getElementById("container"));
       }, 3000);
     });
   };
