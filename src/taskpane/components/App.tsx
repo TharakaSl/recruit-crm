@@ -41,7 +41,7 @@ export default class App extends React.Component<AppProps, AppState> {
 
     return (
       <div>
-        <Initial title={this.props.title}/>
+        <Initial title={this.props.title} keyVal={new Date().getTime().toString()}/>
       </div>
     );
   }

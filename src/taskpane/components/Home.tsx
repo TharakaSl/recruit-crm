@@ -29,6 +29,7 @@ export default class Home extends React.Component<HomeProps, HomeState> {
 
   render() {
     return (
+      <div className="recruit-crm-container">
       <Card
         style={{ width: 300 }}
         actions={[<SettingOutlined key="setting" />, <EditOutlined key="edit" />]}
@@ -39,6 +40,7 @@ export default class Home extends React.Component<HomeProps, HomeState> {
           description={this.state.senderName}
         />
       </Card>
+      </div>
     );
   }
 }

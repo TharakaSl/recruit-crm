@@ -5,6 +5,7 @@ import Auth from "./Auth";
 
 export interface InitialProps {
   title: string;
+  keyVal: string;
 }
 
 export interface InitialState {
@@ -37,7 +38,7 @@ class Initial extends React.Component<InitialProps, InitialState> {
                 marginBottom: 40
               }}
             >
-              <Home />
+              <Home key={this.props.keyVal}/>
             </div>
           </div>
         ) : (

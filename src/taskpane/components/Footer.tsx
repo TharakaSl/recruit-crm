@@ -74,7 +74,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
       console.log(asyncResult);
       setTimeout(() => {
         this.setState({ blocking: false });
-        ReactDOM.render(<Initial title="Woocommerce Add in" />, document.getElementById("container"));
+        ReactDOM.render(<Initial title="Recruit CRM Add in" keyVal={new Date().getTime().toString()} />, document.getElementById("container"));
       }, 3000);
     });
   };
