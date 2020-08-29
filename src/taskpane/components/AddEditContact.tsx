@@ -1,15 +1,20 @@
 import * as React from "react";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import Header from "./Header";
 import { FormInstance } from "antd/lib/form";
 import { addContact } from "../services/contactService";
+import { getCompanies } from "../services/companyService";
+
+const { Option } = Select;
+
 export interface AddEditContactProps {
   senderName: string;
   senderEmail: string;
 }
 
 export interface AddEditContactState {
-    inProgress: boolean;
+  inProgress: boolean;
+  companies: any[];
 }
 
 class AddEditContact extends React.Component<AddEditContactProps, AddEditContactState> {
@@ -19,19 +24,32 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
     super(props, {});
 
     this.state = {
-        inProgress: false
+      inProgress: false,
+      companies: []
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.formRef.current.setFieldsValue({
       firstName: this.props.senderName,
       email: this.props.senderEmail
     });
+    const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
+    let result = await getCompanies(authKey);
+    if (result) {
+      let noteTypes = [];
+      result.data.forEach(c => {
+        noteTypes.push({
+          key: c.slug,
+          text: c.company_name
+        });
+      });
+      this.setState({ companies: noteTypes });
+    }
   }
 
   render() {
-    const onFinish = async(values) => {
+    const onFinish = async values => {
       console.log("Success:", values);
       this.setState({ inProgress: true });
       let contactObj = {
@@ -39,7 +57,7 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
         last_name: values.lastName,
         email: values.email,
         contact_number: values.phoneNumber,
-        //companyName: values.companyName,
+        company_slug: values.companyName,
         designation: values.title
       };
       try {
@@ -84,7 +102,15 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
               <Input placeholder="Title/Position" />
             </Form.Item>
             <Form.Item name="companyName">
-              <Input placeholder="Company Name" />
+              <Select placeholder="Select Company" allowClear>
+                {this.state.companies.map((item, index) => {
+                  return (
+                    <Option value={item.key} key={index}>
+                      {item.text}
+                    </Option>
+                  );
+                })}
+              </Select>
             </Form.Item>
             <Form.Item>
               <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
