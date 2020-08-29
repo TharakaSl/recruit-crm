@@ -1,20 +1,25 @@
 import * as React from "react";
+import { PageHeader } from "antd";
+import ReactDOM from "react-dom";
+import Initial from "./Initial";
 
 export interface HeaderProps {
-  title: string;
-  logo: string;
-  message: string;
+  email: string;
 }
 
 export default class Header extends React.Component<HeaderProps> {
   render() {
-    const { title, logo, message } = this.props;
-
     return (
-      <section>
-        <img width="90" height="90" src={logo} alt={title} title={title} />
-        <h1 className="ms-fontSize-su ms-fontWeight-light ms-fontColor-neutralPrimary">{message}</h1>
-      </section>
+      <div className="site-page-header-ghost-wrapper">
+        <PageHeader className="site-page-header" onBack={this.goToHome} title="" subTitle={this.props.email} />
+      </div>
     );
   }
+
+  goToHome = () => {
+    ReactDOM.render(
+      <Initial title="Recruit CRM" keyVal={new Date().getTime().toString()} />,
+      document.getElementById("container")
+    );
+  };
 }
