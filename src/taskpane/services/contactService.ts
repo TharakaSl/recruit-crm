@@ -29,3 +29,18 @@ export const searchContact = async (email, apiKey) => {
     return error.response.data;
   }
 };
+
+export const addContact = async (_data, apiKey) => {
+  try {
+    const res = await axioConnectorInstance.post("/contacts" , {
+      data: _data,
+      headers: {
+        Authorization: "Bearer " + apiKey
+      }
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};

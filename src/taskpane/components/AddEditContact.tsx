@@ -2,12 +2,15 @@ import * as React from "react";
 import { Button, Form, Input } from "antd";
 import Header from "./Header";
 import { FormInstance } from "antd/lib/form";
+import { addContact } from "../services/contactService";
 export interface AddEditContactProps {
   senderName: string;
   senderEmail: string;
 }
 
-export interface AddEditContactState {}
+export interface AddEditContactState {
+    inProgress: boolean;
+}
 
 class AddEditContact extends React.Component<AddEditContactProps, AddEditContactState> {
   formRef = React.createRef<FormInstance>();
@@ -15,7 +18,9 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
   constructor(props, {}) {
     super(props, {});
 
-    this.state = {};
+    this.state = {
+        inProgress: false
+    };
   }
 
   componentDidMount() {
@@ -26,7 +31,29 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
   }
 
   render() {
-    const onFinish = () => {};
+    const onFinish = async(values) => {
+      console.log("Success:", values);
+      this.setState({ inProgress: true });
+      let contactObj = {
+        first_name: values.firstName,
+        last_name: values.lastName,
+        email: values.email,
+        contact_number: values.phoneNumber,
+        //companyName: values.companyName,
+        designation: values.title
+      };
+      try {
+        const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
+        let response = await addContact(contactObj, authKey);
+        if (response) {
+          this.setState({ inProgress: false });
+        } else {
+          this.setState({ inProgress: false });
+        }
+      } catch (error) {
+        this.setState({ inProgress: false });
+      }
+    };
 
     const onFinishFailed = () => {};
 
