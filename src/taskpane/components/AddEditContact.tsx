@@ -12,6 +12,7 @@ const { Option } = Select;
 export interface AddEditContactProps {
   senderName: string;
   senderEmail: string;
+  isAddNew: boolean;
 }
 
 export interface AddEditContactState {
@@ -66,12 +67,20 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
       };
       try {
         const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
-        let response = await addContact(contactObj, authKey);
-        if (response) {
+        if (this.props.isAddNew) {
+          let response = await addContact(contactObj, authKey);
+          if (response) {
+            this.setState({ inProgress: false, isError: false });
+            ReactDOM.render(
+              <Initial title="Recruit CRM Add in" keyVal={new Date().getTime().toString()} />,
+              document.getElementById("container")
+            );
+          } else {
+            this.setState({ inProgress: false, isError: true });
+          }
+        }
+        else {
           this.setState({ inProgress: false, isError: false });
-          ReactDOM.render(<Initial title="Recruit CRM Add in" keyVal={new Date().getTime().toString()} />, document.getElementById("container"));
-        } else {
-          this.setState({ inProgress: false, isError: true });
         }
       } catch (error) {
         this.setState({ inProgress: false, isError: true });
@@ -91,7 +100,7 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
         <Header email={this.props.senderEmail} />
         {this.state.isError && (
           <div>
-            <Alert message="Error in add contact" type="error" showIcon style={{marginTop: "5px"}}/>
+            <Alert message="Error in add contact" type="error" showIcon style={{ marginTop: "5px" }} />
           </div>
         )}
         {!this.state.inProgress ? (
@@ -131,7 +140,7 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
               </Form.Item>
               <Form.Item>
                 <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
-                  Add Contact
+                  {this.props.isAddNew ? "Add Contact" : "Update Contact"}
                 </Button>
               </Form.Item>
             </Form>

@@ -3,23 +3,33 @@ import { Card, Button, Divider } from "antd";
 import Meta from "antd/lib/card/Meta";
 import ReactDOM from "react-dom";
 import AddEditContact from "./AddEditContact";
+import { Contact } from "../models/Contact";
 export interface ContactHomeProps {
   senderName: string;
   senderEmail: string;
-  searchResult: any[];
+  searchResult: Contact;
 }
 
-export interface ContactHomeState {}
+export interface ContactHomeState {
+  isAddNew: boolean;
+}
 
 class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
   constructor(props, {}) {
     super(props, {});
 
-    this.state = {};
+    this.state = {
+      isAddNew: true
+    };
   }
 
   async componentDidMount() {
-    
+    if(this.props.searchResult.data) {
+     this.setState({isAddNew: false});
+    }
+    else {
+      this.setState({isAddNew: true});
+    }
   }
 
   render() {
@@ -29,7 +39,21 @@ class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
           <Meta title={this.props.senderName} description={this.props.senderEmail} />
           <Divider />
           <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
-          <Button style={{ backgroundColor: "#47BB7F", color: "white" }} onClick={this.showAddEditContactView}>Add to RecruitCRM</Button>
+            {!this.props.searchResult.data ? (
+              <Button style={{ backgroundColor: "#47BB7F", color: "white" }} onClick={this.showAddEditContactView}>
+                Add to RecruitCRM
+              </Button>
+            ) : (
+              <div>
+                <Button style={{ backgroundColor: "#47BB7F", color: "white" }} onClick={this.showAddEditContactView}>
+                  Edit in RecruitCRM
+                </Button>
+                <br></br>
+                <Button type="link" target="_blank" href={this.props.searchResult.data[0].resource_url}>
+                  View in Recruit CRM
+                </Button>
+              </div>
+            )}
           </div>
         </Card>
       </div>
@@ -37,7 +61,10 @@ class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
   }
 
   showAddEditContactView = () => {
-    ReactDOM.render(<AddEditContact senderEmail={this.props.senderEmail} senderName={this.props.senderName}/>, document.getElementById("container"));
+    ReactDOM.render(
+      <AddEditContact senderEmail={this.props.senderEmail} senderName={this.props.senderName} isAddNew={this.state.isAddNew}/>,
+      document.getElementById("container")
+    );
   };
 }
 

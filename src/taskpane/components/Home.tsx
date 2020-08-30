@@ -4,6 +4,8 @@ import CandidateHome from "./CandidateHome";
 import { Space, Spin } from "antd";
 import { searchContact } from "../services/contactService";
 import { searchCandidate } from "../services/candidateService";
+import { Candidate } from "../models/Candidate";
+import { Contact } from "../models/Contact";
 /* global Spinner */
 
 export interface HomeProps {}
@@ -12,8 +14,8 @@ export interface HomeState {
   senderName: string;
   senderEmail: string;
   isLoading: boolean;
-  contactSearchData: any[];
-  candidateSearchData: any[];
+  contactSearchData: Contact;
+  candidateSearchData: Candidate;
 }
 
 export default class Home extends React.Component<HomeProps, HomeState> {
@@ -23,8 +25,8 @@ export default class Home extends React.Component<HomeProps, HomeState> {
       senderEmail: "",
       senderName: "",
       isLoading: false,
-      contactSearchData: [],
-      candidateSearchData: []
+      contactSearchData: {},
+      candidateSearchData: {}
     };
   }
 
