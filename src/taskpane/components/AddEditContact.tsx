@@ -2,10 +2,11 @@ import * as React from "react";
 import { Button, Form, Input, Select, Spin, Alert } from "antd";
 import Header from "./Header";
 import { FormInstance } from "antd/lib/form";
-import { addContact } from "../services/contactService";
+import { addContact, updateContact } from "../services/contactService";
 import { getCompanies } from "../services/companyService";
 import Initial from "./Initial";
 import ReactDOM from "react-dom";
+import { Contact } from "../models/Contact";
 
 const { Option } = Select;
 
@@ -13,6 +14,7 @@ export interface AddEditContactProps {
   senderName: string;
   senderEmail: string;
   isAddNew: boolean;
+  searchResult: Contact;
 }
 
 export interface AddEditContactState {
@@ -35,10 +37,6 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
   }
 
   async componentDidMount() {
-    this.formRef.current.setFieldsValue({
-      firstName: this.props.senderName,
-      email: this.props.senderEmail
-    });
     const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
     let result = await getCompanies(authKey);
     if (result) {
@@ -50,6 +48,21 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
         });
       });
       this.setState({ companies: noteTypes });
+    }
+    if (this.props.isAddNew) {
+      this.formRef.current.setFieldsValue({
+        firstName: this.props.senderName,
+        email: this.props.senderEmail
+      });
+    } else {
+      this.formRef.current.setFieldsValue({
+        firstName: this.props.searchResult.data[0].first_name,
+        lastName: this.props.searchResult.data[0].last_name,
+        email: this.props.searchResult.data[0].email,
+        phoneNumber: this.props.searchResult.data[0].contact_number,
+        title: this.props.searchResult.data[0].designation,
+        companyName: this.props.searchResult.data[0].company_slug,
+      });
     }
   }
 
@@ -78,9 +91,17 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
           } else {
             this.setState({ inProgress: false, isError: true });
           }
-        }
-        else {
-          this.setState({ inProgress: false, isError: false });
+        } else {
+          let response = await updateContact(this.props.searchResult.data[0].slug, contactObj, authKey);
+          if (response) {
+            this.setState({ inProgress: false, isError: false });
+            ReactDOM.render(
+              <Initial title="Recruit CRM Add in" keyVal={new Date().getTime().toString()} />,
+              document.getElementById("container")
+            );
+          } else {
+            this.setState({ inProgress: false, isError: true });
+          }
         }
       } catch (error) {
         this.setState({ inProgress: false, isError: true });

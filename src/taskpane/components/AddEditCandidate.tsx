@@ -2,13 +2,16 @@ import * as React from "react";
 import { Button, Form, Input, Spin, Alert } from "antd";
 import Header from "./Header";
 import { FormInstance } from "antd/lib/form";
-import { addCandidate } from "../services/candidateService";
+import { addCandidate, updateCandidate } from "../services/candidateService";
 import ReactDOM from "react-dom";
 import Initial from "./Initial";
+import { Candidate } from "../models/Candidate";
+
 export interface AddEditCandidateProps {
   senderName: string;
   senderEmail: string;
   isAddNew: boolean;
+  searchResult: Candidate;
 }
 
 export interface AddEditCandidateState {
@@ -28,10 +31,21 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
   }
 
   componentDidMount() {
-    this.formRef.current.setFieldsValue({
-      firstName: this.props.senderName,
-      email: this.props.senderEmail
-    });
+    if (this.props.isAddNew) {
+      this.formRef.current.setFieldsValue({
+        firstName: this.props.senderName,
+        email: this.props.senderEmail
+      });
+    } else {
+      this.formRef.current.setFieldsValue({
+        firstName: this.props.searchResult.data[0].first_name,
+        lastName: this.props.searchResult.data[0].last_name,
+        email: this.props.searchResult.data[0].email,
+        phoneNumber: this.props.searchResult.data[0].contact_number,
+        title: this.props.searchResult.data[0].position,
+        currentStatus: this.props.searchResult.data[0].current_status,
+      });
+    }
   }
 
   render() {
@@ -59,9 +73,17 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
           } else {
             this.setState({ inProgress: false, isError: true });
           }
-        }
-        else {
-          this.setState({ inProgress: false, isError: false });
+        } else {
+          let response = await updateCandidate(this.props.searchResult.data[0].slug, candidateObj, authKey);
+          if (response) {
+            this.setState({ inProgress: false, isError: false });
+            ReactDOM.render(
+              <Initial title="Recruit CRM Add in" keyVal={new Date().getTime().toString()} />,
+              document.getElementById("container")
+            );
+          } else {
+            this.setState({ inProgress: false, isError: true });
+          }
         }
       } catch (error) {
         this.setState({ inProgress: false, isError: true });
@@ -113,7 +135,7 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
               </Form.Item>
               <Form.Item>
                 <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
-                  {this.props.isAddNew ? "Add Candidate" : "Add Candidate"}
+                  {this.props.isAddNew ? "Add Candidate" : "Update Candidate"}
                 </Button>
               </Form.Item>
             </Form>

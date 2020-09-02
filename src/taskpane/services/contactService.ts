@@ -44,3 +44,18 @@ export const addContact = async (_data, apiKey) => {
     return error.response.data;
   }
 };
+
+export const updateContact = async (contactId, _data, apiKey) => {
+  try {
+    const res = await axioConnectorInstance.post("/contacts/" + contactId, _data, {
+      headers: {
+        Authorization: "Bearer " + apiKey,
+        "Content-Type": "application/json"
+      }
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};

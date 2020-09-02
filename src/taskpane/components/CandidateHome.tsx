@@ -62,7 +62,7 @@ class CandidateHome extends React.Component<CandidateHomeProps, CandidateHomeSta
 
   showAddEditCandidateView = () => {
     ReactDOM.render(
-      <AddEditCandidate senderEmail={this.props.senderEmail} senderName={this.props.senderName} isAddNew={this.state.isAddNew}/>,
+      <AddEditCandidate senderEmail={this.props.senderEmail} senderName={this.props.senderName} isAddNew={this.state.isAddNew} searchResult={this.props.searchResult}/>,
       document.getElementById("container")
     );
   };

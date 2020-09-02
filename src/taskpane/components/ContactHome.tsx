@@ -24,11 +24,10 @@ class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
   }
 
   async componentDidMount() {
-    if(this.props.searchResult.data) {
-     this.setState({isAddNew: false});
-    }
-    else {
-      this.setState({isAddNew: true});
+    if (this.props.searchResult.data) {
+      this.setState({ isAddNew: false });
+    } else {
+      this.setState({ isAddNew: true });
     }
   }
 
@@ -62,7 +61,12 @@ class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
 
   showAddEditContactView = () => {
     ReactDOM.render(
-      <AddEditContact senderEmail={this.props.senderEmail} senderName={this.props.senderName} isAddNew={this.state.isAddNew}/>,
+      <AddEditContact
+        senderEmail={this.props.senderEmail}
+        senderName={this.props.senderName}
+        isAddNew={this.state.isAddNew}
+        searchResult={this.props.searchResult}
+      />,
       document.getElementById("container")
     );
   };
