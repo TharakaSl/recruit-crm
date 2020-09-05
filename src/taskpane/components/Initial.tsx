@@ -32,7 +32,6 @@ class Initial extends React.Component<InitialProps, InitialState> {
       <div className="ms-welcome">
         {this.state.isLogged ? (
           <div>
-            {/* <Header title={this.props.title} /> */}
             <div
               style={{
                 marginBottom: 40

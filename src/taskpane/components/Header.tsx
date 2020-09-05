@@ -4,14 +4,14 @@ import ReactDOM from "react-dom";
 import Initial from "./Initial";
 
 export interface HeaderProps {
-  email: string;
+  head: string;
 }
 
 export default class Header extends React.Component<HeaderProps> {
   render() {
     return (
       <div className="site-page-header-ghost-wrapper">
-        <PageHeader className="site-page-header" onBack={this.goToHome} title="" subTitle={this.props.email} />
+        <PageHeader className="site-page-header" onBack={this.goToHome} title="" subTitle={this.props.head} />
       </div>
     );
   }

@@ -1,11 +1,15 @@
 import * as React from "react";
 import ContactHome from "./ContactHome";
 import CandidateHome from "./CandidateHome";
-import { Space, Spin } from "antd";
+import { Space, Spin, Menu, Dropdown } from "antd";
 import { searchContact } from "../services/contactService";
 import { searchCandidate } from "../services/candidateService";
 import { Candidate } from "../models/Candidate";
 import { Contact } from "../models/Contact";
+import * as ReactDOM from "react-dom";
+import CompanyHome from "./CompanyHome";
+import { ProfileOutlined } from "@ant-design/icons";
+import InsertChartOutlined from '@material-ui/icons/InsertChartOutlined';
 /* global Spinner */
 
 export interface HomeProps {}
@@ -45,14 +49,40 @@ export default class Home extends React.Component<HomeProps, HomeState> {
     this.setState({ isLoading: false, candidateSearchData: candidateResult, contactSearchData: contactResult });
   }
 
+  onShowCompany = () => {
+    ReactDOM.render(<CompanyHome />, document.getElementById("container"));
+  };
+
+  
   render() {
+    const menu = (
+      <Menu >
+        <Menu.Item key="1" onClick={this.onShowCompany} icon={<ProfileOutlined style={{color: "#36D7E3"}}/>}>
+          Company
+        </Menu.Item>
+      </Menu>
+    );
+
     return (
       <div className="recruit-crm-container">
         {!this.state.isLoading ? (
-          <Space direction="vertical" style={{ width: "100%" }}>
-            <ContactHome senderEmail={this.state.senderEmail} senderName={this.state.senderName} searchResult={this.state.contactSearchData}/>
-            <CandidateHome senderEmail={this.state.senderEmail} senderName={this.state.senderName} searchResult={this.state.candidateSearchData}/>
-          </Space>
+          <div>
+            <div>
+              <Dropdown.Button style={{ float: 'right' }} overlay={menu} placement="bottomLeft" icon={<InsertChartOutlined style={{color: "#BE68F0"}}/>} />
+            </div>
+            <Space direction="vertical" style={{ width: "100%" }}>
+              <ContactHome
+                senderEmail={this.state.senderEmail}
+                senderName={this.state.senderName}
+                searchResult={this.state.contactSearchData}
+              />
+              <CandidateHome
+                senderEmail={this.state.senderEmail}
+                senderName={this.state.senderName}
+                searchResult={this.state.candidateSearchData}
+              />
+            </Space>
+          </div>
         ) : (
           <div className="centered">
             <Spin size="small" tip="Loading..." />

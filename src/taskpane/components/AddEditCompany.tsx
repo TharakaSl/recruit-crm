@@ -2,24 +2,22 @@ import * as React from "react";
 import { Button, Form, Input, Spin, Alert } from "antd";
 import Header from "./Header";
 import { FormInstance } from "antd/lib/form";
-import { addCandidate, updateCandidate } from "../services/candidateService";
 import ReactDOM from "react-dom";
 import Initial from "./Initial";
 import { Candidate } from "../models/Candidate";
+import { addCompany, updateCompany } from "../services/companyService";
 
-export interface AddEditCandidateProps {
-  senderName: string;
-  senderEmail: string;
+export interface AddEditCompanyProps {
   isAddNew: boolean;
   searchResult: Candidate;
 }
 
-export interface AddEditCandidateState {
+export interface AddEditCompanyState {
   inProgress: boolean;
   isError: boolean;
 }
 
-class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCandidateState> {
+class AddEditCompany extends React.Component<AddEditCompanyProps, AddEditCompanyState> {
   formRef = React.createRef<FormInstance>();
   constructor(props, {}) {
     super(props, {});
@@ -31,12 +29,7 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
   }
 
   componentDidMount() {
-    if (this.props.isAddNew) {
-      this.formRef.current.setFieldsValue({
-        firstName: this.props.senderName,
-        email: this.props.senderEmail
-      });
-    } else {
+    if (!this.props.isAddNew) {
       this.formRef.current.setFieldsValue({
         firstName: this.props.searchResult.data[0].first_name,
         lastName: this.props.searchResult.data[0].last_name,
@@ -52,18 +45,15 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
     const onFinish = async values => {
       console.log("Success:", values);
       this.setState({ inProgress: true });
-      let candidateObj = {
-        first_name: values.firstName,
-        last_name: values.lastName,
-        email: values.email,
-        contact_number: values.phoneNumber,
-        position: values.title,
-        current_status: values.currentStatus
+      let companyObj = {
+        company_name: values.companyName,
+        website: values.website,
+        contact_number: values.telePhone
       };
       try {
         const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
         if (this.props.isAddNew) {
-          let response = await addCandidate(candidateObj, authKey);
+          let response = await addCompany(companyObj, authKey);
           if (response) {
             this.setState({ inProgress: false, isError: false });
             ReactDOM.render(
@@ -74,7 +64,7 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
             this.setState({ inProgress: false, isError: true });
           }
         } else {
-          let response = await updateCandidate(this.props.searchResult.data[0].slug, candidateObj, authKey);
+          let response = await updateCompany(this.props.searchResult.data[0].slug, companyObj, authKey);
           if (response) {
             this.setState({ inProgress: false, isError: false });
             ReactDOM.render(
@@ -100,7 +90,7 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
 
     return (
       <div>
-        <Header head={this.props.senderEmail} />
+        <Header head="Job"/>
         {this.state.isError && (
           <div>
             <Alert message="Error in add contact" type="error" showIcon style={{ marginTop: "5px" }} />
@@ -109,33 +99,28 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
         {!this.state.inProgress ? (
           <div className="recruit-crm-container">
             <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
-              <Form.Item name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
-                <Input placeholder="First Name" />
-              </Form.Item>
-              <Form.Item name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
-                <Input placeholder="Last Name" />
+              <Form.Item name="companyName" rules={[{ required: true, message: "Please add company name" }]}>
+                <Input placeholder="Company Name" />
               </Form.Item>
               <Form.Item
-                name="email"
+                name="website"
                 rules={[
-                  { required: true, message: "Please add the email" },
-                  { type: "email", message: "Please add valid email" }
+                  { type: "url", message: "Please enter valid url" }
                 ]}
               >
-                <Input placeholder="Email" />
+                <Input placeholder="Website" />
               </Form.Item>
-              <Form.Item name="phoneNumber">
-                <Input placeholder="Phone Number" />
-              </Form.Item>
-              <Form.Item name="title">
-                <Input placeholder="Title/Position" />
-              </Form.Item>
-              <Form.Item name="currentStatus">
-                <Input placeholder="Current Status" />
+              <Form.Item
+                name="telePhone"
+                rules={[
+                  { type: "number", message: "Please enter phone number" }
+                ]}
+              >
+                <Input placeholder="Telephone" />
               </Form.Item>
               <Form.Item>
                 <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
-                  {this.props.isAddNew ? "Add Candidate" : "Update Candidate"}
+                  {this.props.isAddNew ? "Add Company" : "Edit Company"}
                 </Button>
               </Form.Item>
             </Form>
@@ -152,4 +137,4 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
   onDisconnect = () => {};
 }
 
-export default AddEditCandidate;
+export default AddEditCompany;

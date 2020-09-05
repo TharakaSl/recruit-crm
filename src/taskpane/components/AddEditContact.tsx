@@ -118,7 +118,7 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
 
     return (
       <div>
-        <Header email={this.props.senderEmail} />
+        <Header head={this.props.senderEmail} />
         {this.state.isError && (
           <div>
             <Alert message="Error in add contact" type="error" showIcon style={{ marginTop: "5px" }} />
