@@ -1,9 +1,11 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { Button, Spin, Form, Select, Divider } from "antd";
 import { Candidate } from "../models/Candidate";
-import { getCandidatesJobs, getJobsInfo } from "../services/linkedJobs";
+import { getCandidatesJobs, getJobsInfo, assignJobToCandidate } from "../services/linkedJobs";
 import { FormInstance } from "antd/lib/form";
 import { searchJobs } from "../services/jobsService";
+import Initial from "./Initial";
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -14,6 +16,7 @@ export interface CandidateJobProps {
 export interface CandidateJobState {
   linkedJobs: any[];
   inProgress: boolean;
+  isJobUpdateProgress: boolean;
   jobs: any[];
 }
 
@@ -25,7 +28,8 @@ class CandidateJob extends React.Component<CandidateJobProps, CandidateJobState>
     this.state = {
       linkedJobs: [],
       inProgress: false,
-      jobs: []
+      jobs: [],
+      isJobUpdateProgress: false
     };
   }
 
@@ -55,19 +59,31 @@ class CandidateJob extends React.Component<CandidateJobProps, CandidateJobState>
     this.setState({ inProgress: false });
   }
 
-  render() {
-    const onJobSearch = async values => {
-      console.log(values);
-      const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
-      const result = await searchJobs(values, authKey);
-      if (result) {
-        this.setState({ jobs: result.data });
-        console.log("jobs: " + result.data);
-      }
-    };
+  onJobSearch = async values => {
+    console.log(values);
+    const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
+    const result = await searchJobs(values, authKey);
+    if (result) {
+      this.setState({ jobs: result.data });
+      console.log("jobs: " + result.data);
+    }
+  };
 
+  render() {
     const onFinish = async values => {
-      console.log(values);
+      this.setState({ isJobUpdateProgress: true });
+      const candidateId = this.props.searchResult.data[0].slug;
+      const jobSlugId = values.selectJob;
+      const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
+      const result = await assignJobToCandidate(authKey, candidateId, jobSlugId);
+      if (result) {
+        this.setState({ isJobUpdateProgress: false });
+        ReactDOM.render(
+          <Initial title="Recruit CRM" keyVal={new Date().getTime().toString()} />,
+          document.getElementById("container")
+        );
+      }
+      this.setState({ isJobUpdateProgress: false });
     };
 
     const fail = async values => {
@@ -78,35 +94,41 @@ class CandidateJob extends React.Component<CandidateJobProps, CandidateJobState>
       <div>
         <div>
           <Divider>Assign Jobs</Divider>
-          <div>
-            <Form onFinish={onFinish} ref={this.formRef} onFinishFailed={fail}>
-              <Form.Item name="selectJob" rules={[{ required: true, message: "Job is required" }]}>
-                <Select
-                  showSearch
-                  style={{ width: 200 }}
-                  placeholder="Search and select jobs by name"
-                  optionFilterProp="children"
-                  onChange={onJobSearch}
-                  filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  {this.state.jobs.map((item, index) => {
-                    return (
-                      <Option value={item.slug} key={index}>
-                        {item.name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-              <FormItem>
-                <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
-                  <Button htmlType="submit" style={{ backgroundColor: "#47BB7F", color: "white", width: "68%" }}>
-                    Assign
-                  </Button>
-                </div>
-              </FormItem>
-            </Form>
-          </div>
+          {!this.state.inProgress ? (
+            <div>
+              <Form onFinish={onFinish} ref={this.formRef} onFinishFailed={fail}>
+                <Form.Item name="selectJob" rules={[{ required: true, message: "Job is required" }]}>
+                  <Select
+                    showSearch
+                    style={{ width: 200 }}
+                    placeholder="Search and select jobs by name"
+                    optionFilterProp="children"
+                    onSearch={this.onJobSearch}
+                    filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >
+                    {this.state.jobs.map((item, index) => {
+                      return (
+                        <Option value={item.slug} key={index}>
+                          {item.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+                <FormItem>
+                  <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+                    <Button htmlType="submit" style={{ backgroundColor: "#47BB7F", color: "white", width: "68%" }}>
+                      Assign
+                    </Button>
+                  </div>
+                </FormItem>
+              </Form>
+            </div>
+          ) : (
+            <div className="centered">
+              <Spin />
+            </div>
+          )}
         </div>
         {!this.state.inProgress ? (
           <div>
