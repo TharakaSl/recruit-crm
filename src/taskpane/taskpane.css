@@ -66,6 +66,14 @@ ul {
     color: white !important;
 }
 
+.ant-select {
+  width: 100% !important;
+}
+
+.ant-select-show-search {
+  width: 100% !important;
+}
+
 .ms-welcome__header {
   padding: 20px;
   padding-bottom: 30px;

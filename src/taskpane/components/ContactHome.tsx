@@ -12,6 +12,7 @@ export interface ContactHomeProps {
 
 export interface ContactHomeState {
   isAddNew: boolean;
+  avatarImg: string;
 }
 
 class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
@@ -19,7 +20,8 @@ class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
     super(props, {});
 
     this.state = {
-      isAddNew: true
+      isAddNew: true,
+      avatarImg: "https://outlook.office.com/owa/service.svc/s/GetPersonaPhoto?email="+this.props.senderEmail
     };
   }
 
@@ -35,7 +37,11 @@ class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
     return (
       <div>
         <Card title="Contact Profile">
-          <Meta title={this.props.senderName} description={this.props.senderEmail} />
+          <Meta
+            title={this.props.senderName}
+            description={this.props.senderEmail}
+            // avatar={<Avatar src={this.state.avatarImg} size="large"/>}
+          />
           <Divider />
           <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
             {!this.props.searchResult.data ? (

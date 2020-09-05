@@ -4,6 +4,7 @@ import Meta from "antd/lib/card/Meta";
 import ReactDOM from "react-dom";
 import AddEditCandidate from "./AddEditCandidate";
 import { Candidate } from "../models/Candidate";
+import CandidateJob from "./CandidateJob";
 export interface CandidateHomeProps {
   senderName: string;
   senderEmail: string;
@@ -51,10 +52,11 @@ class CandidateHome extends React.Component<CandidateHomeProps, CandidateHomeSta
                 <br></br>
                 <Button type="link" target="_blank" href={this.props.searchResult.data[0].resource_url}>
                   View in Recruit CRM
-                </Button>
+                </Button>       
               </div>
             )}
           </div>
+          {this.props.searchResult.data && <CandidateJob searchResult={this.props.searchResult}/>}
         </Card>
       </div>
     );
