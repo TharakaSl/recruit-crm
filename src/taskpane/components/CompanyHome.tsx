@@ -3,6 +3,9 @@ import Header from "./Header";
 import { Input, Button } from "antd";
 const { Search } = Input;
 import { AppstoreAddOutlined } from "@ant-design/icons";
+import ReactDOM from "react-dom";
+import AddEditCompany from "./AddEditCompany";
+
 export interface CompanyHomeProps {}
 
 export interface CompanyHomeState {}
@@ -20,7 +23,12 @@ class CompanyHome extends React.Component<CompanyHomeProps, CompanyHomeState> {
       console.log(value);
     };
 
-    const addNewCompany = () => {};
+    const addNewCompany = () => {
+      ReactDOM.render(
+        <AddEditCompany isAddNew={true} />,
+        document.getElementById("container")
+      );
+    };
 
     return (
       <div>

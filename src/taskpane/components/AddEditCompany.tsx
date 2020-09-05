@@ -4,12 +4,11 @@ import Header from "./Header";
 import { FormInstance } from "antd/lib/form";
 import ReactDOM from "react-dom";
 import Initial from "./Initial";
-import { Candidate } from "../models/Candidate";
-import { addCompany, updateCompany } from "../services/companyService";
+import { addCompany } from "../services/companyService";
 
 export interface AddEditCompanyProps {
   isAddNew: boolean;
-  searchResult: Candidate;
+  // searchResult: Candidate;
 }
 
 export interface AddEditCompanyState {
@@ -31,12 +30,6 @@ class AddEditCompany extends React.Component<AddEditCompanyProps, AddEditCompany
   componentDidMount() {
     if (!this.props.isAddNew) {
       this.formRef.current.setFieldsValue({
-        firstName: this.props.searchResult.data[0].first_name,
-        lastName: this.props.searchResult.data[0].last_name,
-        email: this.props.searchResult.data[0].email,
-        phoneNumber: this.props.searchResult.data[0].contact_number,
-        title: this.props.searchResult.data[0].position,
-        currentStatus: this.props.searchResult.data[0].current_status,
       });
     }
   }
@@ -64,16 +57,16 @@ class AddEditCompany extends React.Component<AddEditCompanyProps, AddEditCompany
             this.setState({ inProgress: false, isError: true });
           }
         } else {
-          let response = await updateCompany(this.props.searchResult.data[0].slug, companyObj, authKey);
-          if (response) {
-            this.setState({ inProgress: false, isError: false });
-            ReactDOM.render(
-              <Initial title="Recruit CRM Add in" keyVal={new Date().getTime().toString()} />,
-              document.getElementById("container")
-            );
-          } else {
-            this.setState({ inProgress: false, isError: true });
-          }
+          // let response = await updateCompany(this.props.searchResult.data[0].slug, companyObj, authKey);
+          // if (response) {
+          //   this.setState({ inProgress: false, isError: false });
+          //   ReactDOM.render(
+          //     <Initial title="Recruit CRM Add in" keyVal={new Date().getTime().toString()} />,
+          //     document.getElementById("container")
+          //   );
+          // } else {
+          //   this.setState({ inProgress: false, isError: true });
+          // }
         }
       } catch (error) {
         this.setState({ inProgress: false, isError: true });
@@ -90,7 +83,7 @@ class AddEditCompany extends React.Component<AddEditCompanyProps, AddEditCompany
 
     return (
       <div>
-        <Header head="Job"/>
+        <Header head="Company"/>
         {this.state.isError && (
           <div>
             <Alert message="Error in add contact" type="error" showIcon style={{ marginTop: "5px" }} />
@@ -99,7 +92,7 @@ class AddEditCompany extends React.Component<AddEditCompanyProps, AddEditCompany
         {!this.state.inProgress ? (
           <div className="recruit-crm-container">
             <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
-              <Form.Item name="companyName" rules={[{ required: true, message: "Please add company name" }]}>
+              <Form.Item name="companyName" rules={[{ required: true, message: "Please add company name" }, {min: 3, message: 'Company name must be minimum 3 characters.'}]}>
                 <Input placeholder="Company Name" />
               </Form.Item>
               <Form.Item
@@ -112,11 +105,8 @@ class AddEditCompany extends React.Component<AddEditCompanyProps, AddEditCompany
               </Form.Item>
               <Form.Item
                 name="telePhone"
-                rules={[
-                  { type: "number", message: "Please enter phone number" }
-                ]}
               >
-                <Input placeholder="Telephone" />
+                <Input placeholder="Telephone" type="number"/>
               </Form.Item>
               <Form.Item>
                 <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
