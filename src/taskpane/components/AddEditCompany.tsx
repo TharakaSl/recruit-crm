@@ -4,10 +4,12 @@ import Header from "./Header";
 import { FormInstance } from "antd/lib/form";
 import ReactDOM from "react-dom";
 import Initial from "./Initial";
-import { addCompany } from "../services/companyService";
+import { addCompany, updateCompany } from "../services/companyService";
+import { CompanyData } from "../models/COmpany";
 
 export interface AddEditCompanyProps {
   isAddNew: boolean;
+  companyData: CompanyData;
   // searchResult: Candidate;
 }
 
@@ -30,6 +32,8 @@ class AddEditCompany extends React.Component<AddEditCompanyProps, AddEditCompany
   componentDidMount() {
     if (!this.props.isAddNew) {
       this.formRef.current.setFieldsValue({
+        companyName: this.props.companyData.company_name,
+        website: this.props.companyData.website
       });
     }
   }
@@ -57,16 +61,16 @@ class AddEditCompany extends React.Component<AddEditCompanyProps, AddEditCompany
             this.setState({ inProgress: false, isError: true });
           }
         } else {
-          // let response = await updateCompany(this.props.searchResult.data[0].slug, companyObj, authKey);
-          // if (response) {
-          //   this.setState({ inProgress: false, isError: false });
-          //   ReactDOM.render(
-          //     <Initial title="Recruit CRM Add in" keyVal={new Date().getTime().toString()} />,
-          //     document.getElementById("container")
-          //   );
-          // } else {
-          //   this.setState({ inProgress: false, isError: true });
-          // }
+          let response = await updateCompany(this.props.companyData.slug, companyObj, authKey);
+          if (response) {
+            this.setState({ inProgress: false, isError: false });
+            ReactDOM.render(
+              <Initial title="Recruit CRM Add in" keyVal={new Date().getTime().toString()} />,
+              document.getElementById("container")
+            );
+          } else {
+            this.setState({ inProgress: false, isError: true });
+          }
         }
       } catch (error) {
         this.setState({ inProgress: false, isError: true });
@@ -110,7 +114,7 @@ class AddEditCompany extends React.Component<AddEditCompanyProps, AddEditCompany
               </Form.Item>
               <Form.Item>
                 <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
-                  {this.props.isAddNew ? "Add Company" : "Edit Company"}
+                  {this.props.isAddNew ? "Add Company" : "Update Company"}
                 </Button>
               </Form.Item>
             </Form>

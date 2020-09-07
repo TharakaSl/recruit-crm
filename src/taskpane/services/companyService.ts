@@ -1,5 +1,20 @@
 import axioConnectorInstance from "./axioConnectorInstance";
 
+export const searchCompany = async (name, apiKey) => {
+  try {
+    const res = await axioConnectorInstance.get("/companies/search?company_name=" + name, {
+      data: null,
+      headers: {
+        Authorization: "Bearer " + apiKey
+      }
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};
+
 export const getCompanies = async (apiKey) => {
   try {
     const res = await axioConnectorInstance.get("/companies" , {
