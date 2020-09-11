@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Button, Spin, Form, Select, Divider } from "antd";
-import { Candidate } from "../models/Candidate";
+import { CandidateData } from "../models/Candidate";
 import { getCandidatesJobs, getJobsInfo, assignJobToCandidate } from "../services/linkedJobs";
 import { FormInstance } from "antd/lib/form";
 import { searchJobs } from "../services/jobsService";
@@ -10,7 +10,7 @@ const FormItem = Form.Item;
 const { Option } = Select;
 
 export interface CandidateJobProps {
-  searchResult: Candidate;
+  searchResult: CandidateData;
 }
 
 export interface CandidateJobState {
@@ -35,7 +35,7 @@ class CandidateJob extends React.Component<CandidateJobProps, CandidateJobState>
 
   async componentDidMount() {
     this.setState({ inProgress: true });
-    const candidateId = this.props.searchResult.data[0].slug;
+    const candidateId = this.props.searchResult.slug;
     const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
     const candidateJobResult = await getCandidatesJobs(authKey, candidateId);
     if (candidateJobResult) {
@@ -64,7 +64,7 @@ class CandidateJob extends React.Component<CandidateJobProps, CandidateJobState>
     const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
     const result = await searchJobs(values, authKey);
     if (result) {
-      this.setState({ jobs: result.data });
+      this.setState({ jobs: result.data ? result.data : [] });
       console.log("jobs: " + result.data);
     }
   };
@@ -72,7 +72,7 @@ class CandidateJob extends React.Component<CandidateJobProps, CandidateJobState>
   render() {
     const onFinish = async values => {
       this.setState({ isJobUpdateProgress: true });
-      const candidateId = this.props.searchResult.data[0].slug;
+      const candidateId = this.props.searchResult.slug;
       const jobSlugId = values.selectJob;
       const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
       const result = await assignJobToCandidate(authKey, candidateId, jobSlugId);

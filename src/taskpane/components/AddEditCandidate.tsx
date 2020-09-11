@@ -1,11 +1,14 @@
 import * as React from "react";
-import { Button, Form, Input, Spin, Alert } from "antd";
+import { Button, Form, Input, Spin, Alert, Collapse } from "antd";
 import Header from "./Header";
 import { FormInstance } from "antd/lib/form";
 import { addCandidate, updateCandidate } from "../services/candidateService";
 import ReactDOM from "react-dom";
 import Initial from "./Initial";
 import { CandidateData } from "../models/Candidate";
+import CandidateJob from "./CandidateJob";
+
+const { Panel } = Collapse;
 
 export interface AddEditCandidateProps {
   senderName: string;
@@ -43,7 +46,7 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
         email: this.props.searchResult.email,
         phoneNumber: this.props.searchResult.contact_number,
         title: this.props.searchResult.position,
-        currentStatus: this.props.searchResult.current_status,
+        currentStatus: this.props.searchResult.current_status
       });
     }
   }
@@ -108,37 +111,46 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
         )}
         {!this.state.inProgress ? (
           <div className="recruit-crm-container">
-            <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
-              <Form.Item name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
-                <Input placeholder="First Name" />
-              </Form.Item>
-              <Form.Item name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
-                <Input placeholder="Last Name" />
-              </Form.Item>
-              <Form.Item
-                name="email"
-                rules={[
-                  { required: true, message: "Please add the email" },
-                  { type: "email", message: "Please add valid email" }
-                ]}
-              >
-                <Input placeholder="Email" />
-              </Form.Item>
-              <Form.Item name="phoneNumber">
-                <Input placeholder="Phone Number" />
-              </Form.Item>
-              <Form.Item name="title">
-                <Input placeholder="Title/Position" />
-              </Form.Item>
-              <Form.Item name="currentStatus">
-                <Input placeholder="Current Status" />
-              </Form.Item>
-              <Form.Item>
-                <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
-                  {this.props.isAddNew ? "Add Candidate" : "Update Candidate"}
-                </Button>
-              </Form.Item>
-            </Form>
+            <Collapse defaultActiveKey={["1"]}>
+              <Panel header="Update Candidate" key="1">
+                <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
+                  <Form.Item name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
+                    <Input placeholder="First Name" />
+                  </Form.Item>
+                  <Form.Item name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
+                    <Input placeholder="Last Name" />
+                  </Form.Item>
+                  <Form.Item
+                    name="email"
+                    rules={[
+                      { required: true, message: "Please add the email" },
+                      { type: "email", message: "Please add valid email" }
+                    ]}
+                  >
+                    <Input placeholder="Email" />
+                  </Form.Item>
+                  <Form.Item name="phoneNumber">
+                    <Input placeholder="Phone Number" />
+                  </Form.Item>
+                  <Form.Item name="title">
+                    <Input placeholder="Title/Position" />
+                  </Form.Item>
+                  <Form.Item name="currentStatus">
+                    <Input placeholder="Current Status" />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
+                      {this.props.isAddNew ? "Add Candidate" : "Update Candidate"}
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Panel>
+              {this.props.searchResult && (
+                <Panel header="Assign Jobs" key="2">
+                  <CandidateJob searchResult={this.props.searchResult} />
+                </Panel>
+              )}
+            </Collapse>
           </div>
         ) : (
           <div className="centered">
