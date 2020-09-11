@@ -5,13 +5,13 @@ import { FormInstance } from "antd/lib/form";
 import { addCandidate, updateCandidate } from "../services/candidateService";
 import ReactDOM from "react-dom";
 import Initial from "./Initial";
-import { Candidate } from "../models/Candidate";
+import { CandidateData } from "../models/Candidate";
 
 export interface AddEditCandidateProps {
   senderName: string;
   senderEmail: string;
   isAddNew: boolean;
-  searchResult: Candidate;
+  searchResult: CandidateData;
 }
 
 export interface AddEditCandidateState {
@@ -38,12 +38,12 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
       });
     } else {
       this.formRef.current.setFieldsValue({
-        firstName: this.props.searchResult.data[0].first_name,
-        lastName: this.props.searchResult.data[0].last_name,
-        email: this.props.searchResult.data[0].email,
-        phoneNumber: this.props.searchResult.data[0].contact_number,
-        title: this.props.searchResult.data[0].position,
-        currentStatus: this.props.searchResult.data[0].current_status,
+        firstName: this.props.searchResult.first_name,
+        lastName: this.props.searchResult.last_name,
+        email: this.props.searchResult.email,
+        phoneNumber: this.props.searchResult.contact_number,
+        title: this.props.searchResult.position,
+        currentStatus: this.props.searchResult.current_status,
       });
     }
   }
@@ -74,7 +74,7 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
             this.setState({ inProgress: false, isError: true });
           }
         } else {
-          let response = await updateCandidate(this.props.searchResult.data[0].slug, candidateObj, authKey);
+          let response = await updateCandidate(this.props.searchResult.slug, candidateObj, authKey);
           if (response) {
             this.setState({ inProgress: false, isError: false });
             ReactDOM.render(

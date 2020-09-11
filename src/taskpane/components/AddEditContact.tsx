@@ -6,7 +6,7 @@ import { addContact, updateContact } from "../services/contactService";
 import { getCompanies } from "../services/companyService";
 import Initial from "./Initial";
 import ReactDOM from "react-dom";
-import { Contact } from "../models/Contact";
+import { ContactData } from "../models/Contact";
 
 const { Option } = Select;
 
@@ -14,7 +14,7 @@ export interface AddEditContactProps {
   senderName: string;
   senderEmail: string;
   isAddNew: boolean;
-  searchResult: Contact;
+  searchResult: ContactData;
 }
 
 export interface AddEditContactState {
@@ -56,12 +56,12 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
       });
     } else {
       this.formRef.current.setFieldsValue({
-        firstName: this.props.searchResult.data[0].first_name,
-        lastName: this.props.searchResult.data[0].last_name,
-        email: this.props.searchResult.data[0].email,
-        phoneNumber: this.props.searchResult.data[0].contact_number,
-        title: this.props.searchResult.data[0].designation,
-        companyName: this.props.searchResult.data[0].company_slug,
+        firstName: this.props.searchResult.first_name,
+        lastName: this.props.searchResult.last_name,
+        email: this.props.searchResult.email,
+        phoneNumber: this.props.searchResult.contact_number,
+        title: this.props.searchResult.designation,
+        companyName: this.props.searchResult.company_slug,
       });
     }
   }
@@ -92,7 +92,7 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
             this.setState({ inProgress: false, isError: true });
           }
         } else {
-          let response = await updateContact(this.props.searchResult.data[0].slug, contactObj, authKey);
+          let response = await updateContact(this.props.searchResult.slug, contactObj, authKey);
           if (response) {
             this.setState({ inProgress: false, isError: false });
             ReactDOM.render(

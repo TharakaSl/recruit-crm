@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card, Button, Divider } from "antd";
+import { Card, Button, Divider, Space } from "antd";
 import Meta from "antd/lib/card/Meta";
 import ReactDOM from "react-dom";
 import AddEditContact from "./AddEditContact";
@@ -21,7 +21,7 @@ class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
 
     this.state = {
       isAddNew: true,
-      avatarImg: "https://outlook.office.com/owa/service.svc/s/GetPersonaPhoto?email="+this.props.senderEmail
+      avatarImg: "https://outlook.office.com/owa/service.svc/s/GetPersonaPhoto?email=" + this.props.senderEmail
     };
   }
 
@@ -36,42 +36,66 @@ class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
   render() {
     return (
       <div>
-        <Card title="Contact Profile">
-          <Meta
-            title={this.props.senderName}
-            description={this.props.senderEmail}
-            // avatar={<Avatar src={this.state.avatarImg} size="large"/>}
-          />
-          <Divider />
-          <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
-            {!this.props.searchResult.data ? (
-              <Button style={{ backgroundColor: "#47BB7F", color: "white" }} onClick={this.showAddEditContactView}>
+        {Object.entries(this.props.searchResult).length !== 0 ? (
+          <div>
+            {this.props.searchResult.data.map((item, index) => {
+              return (
+                <Space direction="vertical" style={{ width: "100%" }} key={index}>
+                  <Card title="Contact Profile">
+                    <Meta
+                      title={this.props.senderName}
+                      description={this.props.senderEmail}
+                      // avatar={<Avatar src={this.state.avatarImg} size="large"/>}
+                    />
+                    <Divider />
+                    <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+                        <div>
+                          <Button
+                            style={{ backgroundColor: "#47BB7F", color: "white" }}
+                            onClick={() => this.showAddEditContactView(item)}
+                          >
+                            Edit in RecruitCRM
+                          </Button>
+                          <br></br>
+                          <Button type="link" target="_blank" href={this.props.searchResult.data[index].resource_url}>
+                            View in Recruit CRM
+                          </Button>
+                        </div>
+                    </div>
+                  </Card>
+                </Space>
+              );
+            })}
+          </div>
+        ) : (
+          <Card title="Contact Profile">
+            <Meta
+              title={this.props.senderName}
+              description={this.props.senderEmail}
+              // avatar={<Avatar src={this.state.avatarImg} size="large"/>}
+            />
+            <Divider />
+            <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+              <Button
+                style={{ backgroundColor: "#1574dc", color: "white" }}
+                onClick={() => this.showAddEditContactView(null)}
+              >
                 Add to RecruitCRM
               </Button>
-            ) : (
-              <div>
-                <Button style={{ backgroundColor: "#47BB7F", color: "white" }} onClick={this.showAddEditContactView}>
-                  Edit in RecruitCRM
-                </Button>
-                <br></br>
-                <Button type="link" target="_blank" href={this.props.searchResult.data[0].resource_url}>
-                  View in Recruit CRM
-                </Button>
-              </div>
-            )}
-          </div>
-        </Card>
+            </div>
+          </Card>
+        )}
       </div>
     );
   }
 
-  showAddEditContactView = () => {
+  showAddEditContactView = searchItem => {
     ReactDOM.render(
       <AddEditContact
         senderEmail={this.props.senderEmail}
         senderName={this.props.senderName}
         isAddNew={this.state.isAddNew}
-        searchResult={this.props.searchResult}
+        searchResult={searchItem}
       />,
       document.getElementById("container")
     );
