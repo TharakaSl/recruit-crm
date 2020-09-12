@@ -49,19 +49,18 @@ class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
                     />
                     <Divider />
                     <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
-                        <div>
-                          <Button
-                            style={{ backgroundColor: "#47BB7F", color: "white" }}
-                            onClick={() => this.showAddEditContactView(item)}
-                          >
-                            Edit in RecruitCRM
-                          </Button>
-                          <br></br>
-                          <Button type="link" target="_blank" href={this.props.searchResult.data[index].resource_url}>
-                            View in Recruit CRM
-                          </Button>
-                        </div>
+                        <Button
+                          style={{ backgroundColor: "#47BB7F", color: "white" }}
+                          target="_blank"
+                          href={this.props.searchResult.data[index].resource_url}
+                        >
+                          Open in CRM
+                        </Button>
                     </div>
+                    <Divider />
+                    <Button type="link" onClick={() => this.showAddEditContactView(item)}>
+                      View contact
+                    </Button>
                   </Card>
                 </Space>
               );

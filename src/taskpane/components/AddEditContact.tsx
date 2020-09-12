@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Form, Input, Select, Spin, Alert } from "antd";
+import { Button, Form, Input, Select, Spin, Alert, Divider, Collapse, Avatar } from "antd";
 import Header from "./Header";
 import { FormInstance } from "antd/lib/form";
 import { addContact, updateContact } from "../services/contactService";
@@ -7,7 +7,11 @@ import { getCompanies } from "../services/companyService";
 import Initial from "./Initial";
 import ReactDOM from "react-dom";
 import { ContactData } from "../models/Contact";
+import { Typography } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
+const { Title } = Typography;
+const { Panel } = Collapse;
 const { Option } = Select;
 
 export interface AddEditContactProps {
@@ -61,7 +65,7 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
         email: this.props.searchResult.email,
         phoneNumber: this.props.searchResult.contact_number,
         title: this.props.searchResult.designation,
-        companyName: this.props.searchResult.company_slug,
+        companyName: this.props.searchResult.company_slug
       });
     }
   }
@@ -126,45 +130,69 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
         )}
         {!this.state.inProgress ? (
           <div className="recruit-crm-container">
-            <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
-              <Form.Item name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
-                <Input placeholder="First Name" />
-              </Form.Item>
-              <Form.Item name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
-                <Input placeholder="Last Name" />
-              </Form.Item>
-              <Form.Item
-                name="email"
-                rules={[
-                  { required: true, message: "Please add the email" },
-                  { type: "email", message: "Please add valid email" }
-                ]}
+            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginBottom: "5px"  }}>
+              {this.props.searchResult.avatar ? (
+                <Avatar src={this.props.searchResult.avatar} size={64} icon={<UserOutlined />} />
+              ) : (
+                <Avatar size={64} icon={<UserOutlined />} />
+              )}
+            </div>
+            <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+              <Title level={5}>{this.props.searchResult.email}</Title>
+            </div>
+            <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+              <Button
+                style={{ backgroundColor: "#47BB7F", color: "white" }}
+                target="_blank"
+                href={this.props.searchResult.resource_url}
               >
-                <Input placeholder="Email" />
-              </Form.Item>
-              <Form.Item name="phoneNumber">
-                <Input placeholder="Phone Number" />
-              </Form.Item>
-              <Form.Item name="title">
-                <Input placeholder="Title/Position" />
-              </Form.Item>
-              <Form.Item name="companyName">
-                <Select placeholder="Select Company" allowClear>
-                  {this.state.companies.map((item, index) => {
-                    return (
-                      <Option value={item.key} key={index}>
-                        {item.text}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-              <Form.Item>
-                <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
-                  {this.props.isAddNew ? "Add Contact" : "Update Contact"}
-                </Button>
-              </Form.Item>
-            </Form>
+                Open in CRM
+              </Button>
+            </div>
+            <Divider />
+            <Collapse defaultActiveKey={["1"]} ghost accordion>
+              <Panel header="About" key="1">
+                <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
+                  <Form.Item name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
+                    <Input placeholder="First Name" />
+                  </Form.Item>
+                  <Form.Item name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
+                    <Input placeholder="Last Name" />
+                  </Form.Item>
+                  <Form.Item
+                    name="email"
+                    rules={[
+                      { required: true, message: "Please add the email" },
+                      { type: "email", message: "Please add valid email" }
+                    ]}
+                  >
+                    <Input placeholder="Email" />
+                  </Form.Item>
+                  <Form.Item name="phoneNumber">
+                    <Input placeholder="Phone Number" />
+                  </Form.Item>
+                  <Form.Item name="title">
+                    <Input placeholder="Title/Position" />
+                  </Form.Item>
+                  <Form.Item name="companyName">
+                    <Select placeholder="Select Company" allowClear>
+                      {this.state.companies.map((item, index) => {
+                        return (
+                          <Option value={item.key} key={index}>
+                            {item.text}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item>
+                    <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
+                      {this.props.isAddNew ? "Add Contact" : "Update Contact"}
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Panel>
+            </Collapse>
           </div>
         ) : (
           <div className="centered">

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Form, Input, Spin, Alert, Collapse } from "antd";
+import { Button, Form, Input, Spin, Alert, Collapse, Divider, Avatar } from "antd";
 import Header from "./Header";
 import { FormInstance } from "antd/lib/form";
 import { addCandidate, updateCandidate } from "../services/candidateService";
@@ -7,6 +7,9 @@ import ReactDOM from "react-dom";
 import Initial from "./Initial";
 import { CandidateData } from "../models/Candidate";
 import CandidateJob from "./CandidateJob";
+import { Typography } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+const { Title } = Typography;
 
 const { Panel } = Collapse;
 
@@ -111,8 +114,28 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
         )}
         {!this.state.inProgress ? (
           <div className="recruit-crm-container">
-            <Collapse defaultActiveKey={["1"]}>
-              <Panel header="Update Candidate" key="1">
+            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginBottom: "5px" }}>
+              {this.props.searchResult.avatar ? (
+                <Avatar src={this.props.searchResult.avatar} size={64} icon={<UserOutlined />} />
+              ) : (
+                <Avatar size={64} icon={<UserOutlined />} />
+              )}
+            </div>
+            <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+              <Title level={5}>{this.props.searchResult.email}</Title>
+            </div>
+            <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+              <Button
+                style={{ backgroundColor: "#47BB7F", color: "white", width: "60%" }}
+                target="_blank"
+                href={this.props.searchResult.resource_url}
+              >
+                Open in CRM
+              </Button>
+            </div>
+            <Divider />
+            <Collapse defaultActiveKey={["1"]} ghost accordion >
+              <Panel header="About" key="1">
                 <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
                   <Form.Item name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
                     <Input placeholder="First Name" />
@@ -146,7 +169,7 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
                 </Form>
               </Panel>
               {this.props.searchResult && (
-                <Panel header="Assign Jobs" key="2">
+                <Panel header="Jobs" key="2">
                   <CandidateJob searchResult={this.props.searchResult} />
                 </Panel>
               )}
