@@ -151,15 +151,16 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
             </div>
             <Divider />
             <Collapse defaultActiveKey={["1"]} ghost accordion>
-              <Panel header="About" key="1">
+              <Panel header="About" key="1" style={{fontWeight: "bold", fontSize: "15px"}}>
                 <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
-                  <Form.Item name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
+                  <Form.Item label="First Name"  name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
                     <Input placeholder="First Name" />
                   </Form.Item>
-                  <Form.Item name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
+                  <Form.Item label="Last Name" name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
                     <Input placeholder="Last Name" />
                   </Form.Item>
                   <Form.Item
+                    label="Email" 
                     name="email"
                     rules={[
                       { required: true, message: "Please add the email" },
@@ -168,13 +169,13 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
                   >
                     <Input placeholder="Email" />
                   </Form.Item>
-                  <Form.Item name="phoneNumber">
+                  <Form.Item label="Phone Number" name="phoneNumber">
                     <Input placeholder="Phone Number" />
                   </Form.Item>
-                  <Form.Item name="title">
+                  <Form.Item label="Title" name="title">
                     <Input placeholder="Title/Position" />
                   </Form.Item>
-                  <Form.Item name="companyName">
+                  <Form.Item label="Company Name" name="companyName">
                     <Select placeholder="Select Company" allowClear>
                       {this.state.companies.map((item, index) => {
                         return (

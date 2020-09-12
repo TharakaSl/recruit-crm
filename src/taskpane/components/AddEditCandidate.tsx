@@ -104,6 +104,13 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
 
     const onFinishFailed = () => {};
 
+    const callback = (key) => {
+      if(key == "1") {
+        
+      }
+      console.log(key);
+    }
+
     return (
       <div>
         <Header head={this.props.senderEmail} />
@@ -134,16 +141,17 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
               </Button>
             </div>
             <Divider />
-            <Collapse defaultActiveKey={["1"]} ghost accordion >
-              <Panel header="About" key="1">
+            <Collapse defaultActiveKey={["1"]} ghost accordion onChange={callback}>
+              <Panel header="About" key="1" style={{fontWeight: "bold", fontSize: "15px"}}>
                 <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
-                  <Form.Item name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
-                    <Input placeholder="First Name" />
+                  <Form.Item label="First Name" name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
+                    <Input placeholder="First Name"/>
                   </Form.Item>
-                  <Form.Item name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
+                  <Form.Item label="Last Name" name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
                     <Input placeholder="Last Name" />
                   </Form.Item>
                   <Form.Item
+                    label="Email" 
                     name="email"
                     rules={[
                       { required: true, message: "Please add the email" },
@@ -152,13 +160,13 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
                   >
                     <Input placeholder="Email" />
                   </Form.Item>
-                  <Form.Item name="phoneNumber">
+                  <Form.Item name="phoneNumber" label="Phone Number" >
                     <Input placeholder="Phone Number" />
                   </Form.Item>
-                  <Form.Item name="title">
+                  <Form.Item name="title" label="Title" >
                     <Input placeholder="Title/Position" />
                   </Form.Item>
-                  <Form.Item name="currentStatus">
+                  <Form.Item name="currentStatus" label="Current Status" >
                     <Input placeholder="Current Status" />
                   </Form.Item>
                   <Form.Item>
@@ -169,7 +177,7 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
                 </Form>
               </Panel>
               {this.props.searchResult && (
-                <Panel header="Jobs" key="2">
+                <Panel header="Jobs" key="2" style={{fontWeight: "bold", fontSize: "15px"}}>
                   <CandidateJob searchResult={this.props.searchResult} />
                 </Panel>
               )}

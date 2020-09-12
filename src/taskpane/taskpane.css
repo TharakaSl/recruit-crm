@@ -74,6 +74,18 @@ ul {
   width: 100% !important;
 }
 
+.ant-form-item-label > label {
+  height: 10px !important;
+}
+
+.ant-form-item {
+  margin-bottom: 10px !important;
+}
+
+.ant-collapse-header {
+ color:#19455a !important;
+}
+
 .ms-welcome__header {
   padding: 20px;
   padding-bottom: 30px;
