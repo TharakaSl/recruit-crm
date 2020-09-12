@@ -49,7 +49,8 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
         email: this.props.searchResult.email,
         phoneNumber: this.props.searchResult.contact_number,
         title: this.props.searchResult.position,
-        currentStatus: this.props.searchResult.current_status
+        currentStatus: this.props.searchResult.current_status,
+        locality: this.props.searchResult.locality
       });
     }
   }
@@ -64,7 +65,8 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
         email: values.email,
         contact_number: values.phoneNumber,
         position: values.title,
-        current_status: values.currentStatus
+        current_status: values.currentStatus,
+        locality: values.locality
       };
       try {
         const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
@@ -104,12 +106,11 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
 
     const onFinishFailed = () => {};
 
-    const callback = (key) => {
-      if(key == "1") {
-        
+    const callback = key => {
+      if (key == "1") {
       }
       console.log(key);
-    }
+    };
 
     return (
       <div>
@@ -121,37 +122,49 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
         )}
         {!this.state.inProgress ? (
           <div className="recruit-crm-container">
-            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginBottom: "5px" }}>
-              {this.props.searchResult.avatar ? (
-                <Avatar src={this.props.searchResult.avatar} size={64} icon={<UserOutlined />} />
-              ) : (
-                <Avatar size={64} icon={<UserOutlined />} />
-              )}
-            </div>
-            <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
-              <Title level={5}>{this.props.searchResult.email}</Title>
-            </div>
-            <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
-              <Button
-                style={{ backgroundColor: "#47BB7F", color: "white", width: "60%" }}
-                target="_blank"
-                href={this.props.searchResult.resource_url}
-              >
-                Open in CRM
-              </Button>
-            </div>
-            <Divider />
+            {!this.props.isAddNew && (
+              <div>
+                <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginBottom: "5px" }}>
+                  {this.props.searchResult.avatar ? (
+                    <Avatar src={this.props.searchResult.avatar} size={64} icon={<UserOutlined />} />
+                  ) : (
+                    <Avatar size={64} icon={<UserOutlined />} />
+                  )}
+                </div>
+                <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+                  <Title level={5}>{this.props.searchResult.email}</Title>
+                </div>
+                <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+                  <Button
+                    style={{ backgroundColor: "#47BB7F", color: "white", width: "60%" }}
+                    target="_blank"
+                    href={this.props.searchResult.resource_url}
+                  >
+                    Open in CRM
+                  </Button>
+                </div>
+                <Divider />
+              </div>
+            )}
             <Collapse defaultActiveKey={["1"]} ghost accordion onChange={callback}>
-              <Panel header="About" key="1" style={{fontWeight: "bold", fontSize: "15px"}}>
+              <Panel header="About" key="1" style={{ fontWeight: "bold", fontSize: "15px" }}>
                 <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
-                  <Form.Item label="First Name" name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
-                    <Input placeholder="First Name"/>
+                  <Form.Item
+                    label="First Name"
+                    name="firstName"
+                    rules={[{ required: true, message: "Please add first name" }]}
+                  >
+                    <Input placeholder="First Name" />
                   </Form.Item>
-                  <Form.Item label="Last Name" name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
+                  <Form.Item
+                    label="Last Name"
+                    name="lastName"
+                    rules={[{ required: true, message: "Please add last name" }]}
+                  >
                     <Input placeholder="Last Name" />
                   </Form.Item>
                   <Form.Item
-                    label="Email" 
+                    label="Email"
                     name="email"
                     rules={[
                       { required: true, message: "Please add the email" },
@@ -160,24 +173,32 @@ class AddEditCandidate extends React.Component<AddEditCandidateProps, AddEditCan
                   >
                     <Input placeholder="Email" />
                   </Form.Item>
-                  <Form.Item name="phoneNumber" label="Phone Number" >
+                  <Form.Item name="phoneNumber" label="Phone Number">
                     <Input placeholder="Phone Number" />
                   </Form.Item>
-                  <Form.Item name="title" label="Title" >
+                  <Form.Item name="title" label="Title">
                     <Input placeholder="Title/Position" />
                   </Form.Item>
-                  <Form.Item name="currentStatus" label="Current Status" >
+                  <Form.Item name="currentStatus" label="Current Status">
                     <Input placeholder="Current Status" />
                   </Form.Item>
+                  <Form.Item name="locality" label="Locality">
+                    <Input placeholder="Locality" />
+                  </Form.Item>
                   <Form.Item>
-                    <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
+                    <Button
+                      htmlType="submit"
+                      size="large"
+                      block
+                      style={{ backgroundColor: "#47BB7F", color: "white", marginTop: "5px" }}
+                    >
                       {this.props.isAddNew ? "Add Candidate" : "Update Candidate"}
                     </Button>
                   </Form.Item>
                 </Form>
               </Panel>
-              {this.props.searchResult && (
-                <Panel header="Jobs" key="2" style={{fontWeight: "bold", fontSize: "15px"}}>
+              {this.props.searchResult && !this.props.isAddNew && (
+                <Panel header="Jobs" key="2" style={{ fontWeight: "bold", fontSize: "15px" }}>
                   <CandidateJob searchResult={this.props.searchResult} />
                 </Panel>
               )}

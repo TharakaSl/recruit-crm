@@ -80,7 +80,8 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
         email: values.email,
         contact_number: values.phoneNumber,
         company_slug: values.companyName,
-        designation: values.title
+        designation: values.title,
+        locality: values.locality
       };
       try {
         const authKey = Office.context.roamingSettings.get("keyRecruitCRM");
@@ -130,37 +131,49 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
         )}
         {!this.state.inProgress ? (
           <div className="recruit-crm-container">
-            <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginBottom: "5px"  }}>
-              {this.props.searchResult.avatar ? (
-                <Avatar src={this.props.searchResult.avatar} size={64} icon={<UserOutlined />} />
-              ) : (
-                <Avatar size={64} icon={<UserOutlined />} />
-              )}
-            </div>
-            <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
-              <Title level={5}>{this.props.searchResult.email}</Title>
-            </div>
-            <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
-              <Button
-                style={{ backgroundColor: "#47BB7F", color: "white" }}
-                target="_blank"
-                href={this.props.searchResult.resource_url}
-              >
-                Open in CRM
-              </Button>
-            </div>
-            <Divider />
+            {!this.props.isAddNew && (
+              <div>
+                <div style={{ justifyContent: "center", alignItems: "center", display: "flex", marginBottom: "5px" }}>
+                  {this.props.searchResult.avatar ? (
+                    <Avatar src={this.props.searchResult.avatar} size={64} icon={<UserOutlined />} />
+                  ) : (
+                    <Avatar size={64} icon={<UserOutlined />} />
+                  )}
+                </div>
+                <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+                  <Title level={5}>{this.props.searchResult.email}</Title>
+                </div>
+                <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
+                  <Button
+                    style={{ backgroundColor: "#47BB7F", color: "white" }}
+                    target="_blank"
+                    href={this.props.searchResult.resource_url}
+                  >
+                    Open in CRM
+                  </Button>
+                </div>
+                <Divider />
+              </div>
+            )}
             <Collapse defaultActiveKey={["1"]} ghost accordion>
-              <Panel header="About" key="1" style={{fontWeight: "bold", fontSize: "15px"}}>
+              <Panel header="About" key="1" style={{ fontWeight: "bold", fontSize: "15px" }}>
                 <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} ref={this.formRef}>
-                  <Form.Item label="First Name"  name="firstName" rules={[{ required: true, message: "Please add first name" }]}>
+                  <Form.Item
+                    label="First Name"
+                    name="firstName"
+                    rules={[{ required: true, message: "Please add first name" }]}
+                  >
                     <Input placeholder="First Name" />
                   </Form.Item>
-                  <Form.Item label="Last Name" name="lastName" rules={[{ required: true, message: "Please add last name" }]}>
+                  <Form.Item
+                    label="Last Name"
+                    name="lastName"
+                    rules={[{ required: true, message: "Please add last name" }]}
+                  >
                     <Input placeholder="Last Name" />
                   </Form.Item>
                   <Form.Item
-                    label="Email" 
+                    label="Email"
                     name="email"
                     rules={[
                       { required: true, message: "Please add the email" },
@@ -186,8 +199,16 @@ class AddEditContact extends React.Component<AddEditContactProps, AddEditContact
                       })}
                     </Select>
                   </Form.Item>
+                  <Form.Item name="locality" label="Locality">
+                    <Input placeholder="Locality" />
+                  </Form.Item>
                   <Form.Item>
-                    <Button htmlType="submit" size="large" block style={{ backgroundColor: "#47BB7F", color: "white" }}>
+                    <Button
+                      htmlType="submit"
+                      size="large"
+                      block
+                      style={{ backgroundColor: "#47BB7F", marginTop: "5px", color: "white" }}
+                    >
                       {this.props.isAddNew ? "Add Contact" : "Update Contact"}
                     </Button>
                   </Form.Item>

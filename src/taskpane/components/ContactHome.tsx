@@ -50,7 +50,7 @@ class ContactHome extends React.Component<ContactHomeProps, ContactHomeState> {
                     <Divider />
                     <div style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
                         <Button
-                          style={{ backgroundColor: "#47BB7F", color: "white" }}
+                          style={{ backgroundColor: "#47BB7F", color: "white", width: "60%" }}
                           target="_blank"
                           href={this.props.searchResult.data[index].resource_url}
                         >

@@ -82,6 +82,10 @@ ul {
   margin-bottom: 10px !important;
 }
 
+.ant-form-item-label > label {
+  color:#464646 !important;
+  font-size: 12px !important;
+}
 .ant-collapse-header {
  color:#19455a !important;
 }
